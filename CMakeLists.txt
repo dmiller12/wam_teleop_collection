@@ -115,6 +115,18 @@ catkin_package(
 ## Build ##
 ###########
 
+include(ExternalProject)
+
+set(OpenCV_VERSION 4.9.0)
+
+ExternalProject_Add(opencv
+  PREFIX opencv
+  GIT_REPOSITORY https://github.com/opencv/opencv.git
+  GIT_TAG ${OpenCV_VERSION}
+  CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=/opt/opencv
+    -DWITH_GSTREAMER=ON
+)
+
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
@@ -162,7 +174,7 @@ include_directories(
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
 catkin_install_python(PROGRAMS
-  src/DataCollectionDMP.py
+  src/data_collection.py
   src/keyboard_command.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

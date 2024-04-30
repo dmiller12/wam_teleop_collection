@@ -58,10 +58,18 @@ class DataRecorder(object):
         self.video = []
         self.collect = False
 
+        self.video_thread = VideoCatureThread(self.cb_video_capture)
+        self.video_thread.start()
+
+        self.stdin_thread = threading.Thread(target=stdin_capture, args=(self.cb_keyboard,))
+        self.stdin_thread.daemon = True
+        self.stdin_thread.start()
+
     def reset(self):
         self.joint_state_data = []
         self.ee_pose_data = []
         self.joint_state_time = []
+        self.video = []
         self.collect = False
 
     def get_next_group_id(self):
@@ -118,6 +126,9 @@ class DataRecorder(object):
             self.print_help()
         elif key_pressed == 'x':
             self.hd5f_file.close()
+            self.video_thread.stop()
+            rospy.signal_shutdown('Exiting...')
+
             sys.exit(0)
         else:
             print('Invalid key:', key_pressed)
@@ -128,6 +139,7 @@ class DataRecorder(object):
         print('e: End data collection')
         print('o: Open grasp')
         print('c: Close grasp')
+        print('x: Exit')
     def __del__(self):
         self.hd5f_file.close()
 
@@ -143,9 +155,4 @@ if __name__ == '__main__':
     recorder = DataRecorder('test.h5')
     recorder.print_help()
 
-    video_thread = VideoCatureThread(recorder.cb_video_capture)
-    video_thread.start()
-
-    stdin_thread = threading.Thread(target=stdin_capture, args=(recorder.cb_keyboard,))
-    stdin_thread.start()
     rospy.spin()
