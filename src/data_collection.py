@@ -38,6 +38,49 @@ class VideoCatureThread(threading.Thread):
 
     def stop(self):
         self.running = False
+
+class DataInterface:
+    def add(self, data):
+        raise NotImplementedError
+
+    def reset(self):
+        raise NotImplementedError
+
+
+class JointStateInterface(DataInterface):
+    def __init__(self):
+        self.joint_state_data = []
+        self.joint_state_time = []
+
+    def add(self, data):
+        joint_state = np.array([data.position, data.velocity, data.effort], dtype=float)
+        self.joint_state_time.append(data.header.stamp.nsecs)
+        self.joint_state_data.append(joint_state)
+
+    def reset(self):
+        self.joint_state_data = []
+        self.joint_state_time = []
+
+class PoseInterface(DataInterface):
+    def __init__(self):
+        self.ee_pose_data = []
+
+    def add(self, data):
+        pose = np.array([data.pose.position.x, data.pose.position.y, data.pose.position.z, data.pose.orientation.x, data.pose.orientation.y, data.pose.orientation.z, data.pose.orientation.w])
+        self.ee_pose_data.append(pose)
+
+    def reset(self):
+        self.ee_pose_data = []
+
+class VideoInterface(DataInterface):
+    def __init__(self):
+        self.video = []
+
+    def add(self, data):
+        self.video.append(data)
+
+    def reset(self):
+        self.video = []
             
 
 class DataRecorder(object):
@@ -156,3 +199,4 @@ if __name__ == '__main__':
     recorder.print_help()
 
     rospy.spin()
+
