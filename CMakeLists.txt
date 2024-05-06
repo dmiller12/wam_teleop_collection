@@ -123,8 +123,7 @@ ExternalProject_Add(opencv
   PREFIX opencv
   GIT_REPOSITORY https://github.com/opencv/opencv.git
   GIT_TAG ${OpenCV_VERSION}
-  CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=/opt/opencv
-    -DWITH_GSTREAMER=ON
+  CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CATKIN_DEVEL_PREFIX}/install/opencv -DOPENCV_EXTRA_MODULES_PATH=~/Downloads/opencv_contrib/modules -DWITH_GSTREAMER=ON
 )
 
 ## Specify additional locations of header files
