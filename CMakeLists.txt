@@ -116,14 +116,25 @@ catkin_package(
 ###########
 
 include(ExternalProject)
+include(FetchContent)
 
 set(OpenCV_VERSION 4.9.0)
+
+FetchContent_Declare(opencv_contrib
+  GIT_REPOSITORY https://github.com/opencv/opencv_contrib.git
+  GIT_TAG ${OpenCV_VERSION}
+)
+
+FetchContent_GetProperties(opencv_contrib)
+if(NOT opencv_contrib_POPULATED)
+  FetchContent_Populate(opencv_contrib)
+endif()
 
 ExternalProject_Add(opencv
   PREFIX opencv
   GIT_REPOSITORY https://github.com/opencv/opencv.git
   GIT_TAG ${OpenCV_VERSION}
-  CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CATKIN_DEVEL_PREFIX}/install/opencv -DOPENCV_EXTRA_MODULES_PATH=~/Downloads/opencv_contrib/modules -DWITH_GSTREAMER=ON
+  CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CATKIN_DEVEL_PREFIX}/install/opencv -DOPENCV_EXTRA_MODULES_PATH=${opencv_contrib_SOURCE_DIR}/modules -DWITH_GSTREAMER=ON
 )
 
 ## Specify additional locations of header files
@@ -174,7 +185,6 @@ include_directories(
 ## in contrast to setup.py, you can choose the destination
 catkin_install_python(PROGRAMS
   src/data_collection.py
-  src/keyboard_command.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
