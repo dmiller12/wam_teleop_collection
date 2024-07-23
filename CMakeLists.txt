@@ -13,6 +13,7 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   wam_msgs
   wam_srvs
+  bhand_teleop_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -107,7 +108,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES wam_teleop_collection
-#  CATKIN_DEPENDS roscpp rospy std_msgs wam_msgs wam_srvs
+ CATKIN_DEPENDS rospy std_msgs wam_msgs wam_srvs bhand_teleop_msgs
 #  DEPENDS system_lib
 )
 
@@ -115,27 +116,27 @@ catkin_package(
 ## Build ##
 ###########
 
-include(ExternalProject)
-include(FetchContent)
-
-set(OpenCV_VERSION 4.9.0)
-
-FetchContent_Declare(opencv_contrib
-  GIT_REPOSITORY https://github.com/opencv/opencv_contrib.git
-  GIT_TAG ${OpenCV_VERSION}
-)
-
-FetchContent_GetProperties(opencv_contrib)
-if(NOT opencv_contrib_POPULATED)
-  FetchContent_Populate(opencv_contrib)
-endif()
-
-ExternalProject_Add(opencv
-  PREFIX opencv
-  GIT_REPOSITORY https://github.com/opencv/opencv.git
-  GIT_TAG ${OpenCV_VERSION}
-  CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CATKIN_DEVEL_PREFIX}/install/opencv -DOPENCV_EXTRA_MODULES_PATH=${opencv_contrib_SOURCE_DIR}/modules -DWITH_GSTREAMER=ON
-)
+# include(ExternalProject)
+# include(FetchContent)
+#
+# set(OpenCV_VERSION 4.9.0)
+#
+# FetchContent_Declare(opencv_contrib
+#   GIT_REPOSITORY https://github.com/opencv/opencv_contrib.git
+#   GIT_TAG ${OpenCV_VERSION}
+# )
+#
+# FetchContent_GetProperties(opencv_contrib)
+# if(NOT opencv_contrib_POPULATED)
+#   FetchContent_Populate(opencv_contrib)
+# endif()
+#
+# ExternalProject_Add(opencv
+#   PREFIX opencv
+#   GIT_REPOSITORY https://github.com/opencv/opencv.git
+#   GIT_TAG ${OpenCV_VERSION}
+#   CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CATKIN_DEVEL_PREFIX}/install/opencv -DOPENCV_EXTRA_MODULES_PATH=${opencv_contrib_SOURCE_DIR}/modules -DWITH_GSTREAMER=ON
+# )
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
